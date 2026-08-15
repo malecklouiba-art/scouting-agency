@@ -1,0 +1,312 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  SCOUT
+  VIEWER
+}
+
+enum Foot {
+  LEFT
+  RIGHT
+  BOTH
+}
+
+enum DataSource {
+  TRANSFERMARKT
+  MANUAL
+}
+
+enum ShortlistStatus {
+  TO_WATCH
+  INTERESTING
+  PRIORITY
+  DISCARDED
+}
+
+enum ReportRecommendation {
+  TO_WATCH
+  INTERESTING
+  PRIORITY
+  DISCARD
+}
+
+enum SyncEntity {
+  PLAYER
+  CLUB
+  TRANSFER
+  COMPETITION
+}
+
+enum SyncStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users      User[]
+  shortlists Shortlist[]
+  reports    Report[]
+}
+
+model User {
+  id             String       @id @default(cuid())
+  supabaseUserId String       @unique
+  email          String       @unique
+  firstName      String?
+  lastName       String?
+  role           Role         @default(SCOUT)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  shortlists    Shortlist[]
+  reports       Report[]
+  conversations Conversation[]
+
+  @@index([organizationId])
+}
+
+model Competition {
+  id           String     @id @default(cuid())
+  source       DataSource @default(TRANSFERMARKT)
+  sourceId     String?
+  sourceUrl    String?
+  lastSyncedAt DateTime?
+
+  name    String
+  country String?
+  tier    Int?
+
+  clubs     Club[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([source, sourceId])
+}
+
+model Club {
+  id           String     @id @default(cuid())
+  source       DataSource @default(TRANSFERMARKT)
+  sourceId     String?
+  sourceUrl    String?
+  lastSyncedAt DateTime?
+
+  name          String
+  country       String?
+  logoUrl       String?
+  competitionId String?
+  competition   Competition? @relation(fields: [competitionId], references: [id])
+
+  players   Player[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([name])
+  @@index([country])
+}
+
+model Player {
+  id String @id @default(cuid())
+
+  // Provenance — obligatoire sur toute donnée externe
+  source       DataSource @default(TRANSFERMARKT)
+  sourceId     String?
+  sourceUrl    String?
+  lastSyncedAt DateTime?
+
+  firstName              String
+  lastName               String
+  dateOfBirth            DateTime?
+  nationality            String?
+  secondaryNationalities String[]  @default([])
+  heightCm               Int?
+  preferredFoot          Foot?
+  position               String?
+  secondaryPositions     String[]  @default([])
+  shirtNumber            Int?
+  marketValueEur         Int?
+  photoUrl               String?
+
+  clubId String?
+  club   Club?   @relation(fields: [clubId], references: [id])
+
+  transfers        Transfer[]
+  history          PlayerHistory[]
+  stats            PlayerStat[]
+  reports          Report[]
+  shortlistPlayers ShortlistPlayer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([position])
+  @@index([nationality])
+  @@index([clubId])
+  @@index([marketValueEur])
+  @@index([lastName, firstName])
+  @@index([dateOfBirth])
+}
+
+model Transfer {
+  id        String     @id @default(cuid())
+  source    DataSource @default(TRANSFERMARKT)
+  sourceId  String?
+  sourceUrl String?
+
+  playerId     String
+  player       Player    @relation(fields: [playerId], references: [id])
+  fromClubName String?
+  toClubName   String?
+  date         DateTime?
+  feeEur       Int?
+  isLoan       Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([playerId])
+}
+
+model PlayerHistory {
+  id              String  @id @default(cuid())
+  playerId        String
+  player          Player  @relation(fields: [playerId], references: [id])
+  season          String
+  clubName        String?
+  competitionName String?
+  appearances     Int?
+  goals           Int?
+  assists         Int?
+  minutesPlayed   Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([playerId])
+}
+
+model PlayerStat {
+  id       String  @id @default(cuid())
+  playerId String
+  player   Player  @relation(fields: [playerId], references: [id])
+  season   String?
+  key      String
+  value    Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([playerId, season, key])
+  @@index([playerId])
+  @@index([key])
+}
+
+model Shortlist {
+  id             String       @id @default(cuid())
+  name           String       @default("Ma shortlist")
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  ownerId        String
+  owner          User         @relation(fields: [ownerId], references: [id])
+
+  players ShortlistPlayer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model ShortlistPlayer {
+  id          String          @id @default(cuid())
+  shortlistId String
+  shortlist   Shortlist       @relation(fields: [shortlistId], references: [id])
+  playerId    String
+  player      Player          @relation(fields: [playerId], references: [id])
+  status      ShortlistStatus @default(TO_WATCH)
+  lastNote    String?
+  addedAt     DateTime        @default(now())
+
+  @@unique([shortlistId, playerId])
+  @@index([playerId])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  playerId       String
+  player         Player       @relation(fields: [playerId], references: [id])
+  authorId       String
+  author         User         @relation(fields: [authorId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  date           DateTime              @default(now())
+  context        String?
+  rating         Int?
+  strengths      String?
+  weaknesses     String?
+  comment        String?
+  recommendation ReportRecommendation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([playerId])
+  @@index([authorId])
+}
+
+model Conversation {
+  id       String    @id @default(cuid())
+  userId   String
+  user     User      @relation(fields: [userId], references: [id])
+  title    String?
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String
+  content        String
+  functionCalls  Json?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+}
+
+model SyncLog {
+  id           String     @id @default(cuid())
+  entity       SyncEntity
+  status       SyncStatus @default(RUNNING)
+  startedAt    DateTime   @default(now())
+  finishedAt   DateTime?
+  fetched      Int        @default(0)
+  created      Int        @default(0)
+  updated      Int        @default(0)
+  errors       Int        @default(0)
+  errorDetails Json?
+  triggeredBy  String?
+
+  @@index([entity, startedAt])
+}
