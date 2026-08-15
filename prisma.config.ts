@@ -9,6 +9,10 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // La CLI (migrate, studio) utilise la connexion "session" (DIRECT_URL) :
+    // le pooler "transaction" (DATABASE_URL) ne supporte pas les prepared
+    // statements dont la CLI a besoin. L'app, elle, continue d'utiliser
+    // DATABASE_URL via l'adapter dans src/server/db/prisma.ts.
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });

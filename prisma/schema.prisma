@@ -120,6 +120,7 @@ model Club {
   @@unique([source, sourceId])
   @@index([name])
   @@index([country])
+  @@index([competitionId])
 }
 
 model Player {
@@ -230,6 +231,7 @@ model Shortlist {
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
+  @@index([ownerId])
 }
 
 model ShortlistPlayer {
@@ -268,6 +270,7 @@ model Report {
 
   @@index([playerId])
   @@index([authorId])
+  @@index([organizationId])
 }
 
 model Conversation {
