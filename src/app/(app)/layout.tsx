@@ -1,13 +1,16 @@
 import { AppHeader } from "@/components/layout/app-header";
+import { getCurrentUser } from "@/server/auth/current-user";
 
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+
   return (
     <div className="flex min-h-svh flex-col">
-      <AppHeader />
+      <AppHeader user={user} />
       <main className="flex-1 px-4 py-6 sm:px-6">{children}</main>
     </div>
   );

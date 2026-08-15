@@ -1,3 +1,6 @@
+"use client";
+
+import { useActionState } from "react";
 import Link from "next/link";
 import {
   Card,
@@ -8,9 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/auth/submit-button";
+import { FormMessage } from "@/components/auth/form-message";
+import { signUpAction } from "@/server/actions/auth.actions";
 
 export default function RegisterPage() {
+  const [state, formAction] = useActionState(signUpAction, null);
+
   return (
     <Card>
       <CardHeader>
@@ -20,28 +27,40 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-4">
+        <form action={formAction} className="flex flex-col gap-4">
+          <FormMessage state={state} />
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="firstName">Prénom</Label>
-              <Input id="firstName" placeholder="Alex" />
+              <Input id="firstName" name="firstName" placeholder="Alex" />
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="lastName">Nom</Label>
-              <Input id="lastName" placeholder="Martin" />
+              <Input id="lastName" name="lastName" placeholder="Martin" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="vous@structure.com" />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="vous@structure.com"
+              required
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="password">Mot de passe</Label>
-            <Input id="password" type="password" placeholder="••••••••" />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              required
+              minLength={6}
+            />
           </div>
-          <Button type="button" className="mt-2 w-full">
-            Créer mon compte
-          </Button>
+          <SubmitButton>Créer mon compte</SubmitButton>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Déjà inscrit ?{" "}
