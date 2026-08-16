@@ -9,10 +9,9 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // La CLI (migrate, studio) utilise la connexion "session" (DIRECT_URL) :
-    // le pooler "transaction" (DATABASE_URL) ne supporte pas les prepared
-    // statements dont la CLI a besoin. L'app, elle, continue d'utiliser
-    // DATABASE_URL via l'adapter dans src/server/db/prisma.ts.
+    // DIRECT_URL et DATABASE_URL pointent la même connexion directe pour
+    // l'instant (voir .env.example) ; DIRECT_URL reste la variable que lit
+    // la CLI si un jour les deux divergent à nouveau (ex. retour au pooler).
     url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });
