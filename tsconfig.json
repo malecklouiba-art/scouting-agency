@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@data-provider/*": ["./services/data-provider/*"]
     }
   },
   "include": [
