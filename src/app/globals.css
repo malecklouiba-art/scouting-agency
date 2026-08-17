@@ -100,3 +100,42 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Verre translucide façon "Liquid Glass" (iOS récent) / panneaux glossy PS3 —
+ * flou + saturation du contenu derrière, liseré clair qui capte la lumière,
+ * reflet interne en haut. Deux variantes : .glass pour une surface neutre sur
+ * le fond clair de l'app (nav, header) ; .glass-on-color pour un élément posé
+ * sur un fond déjà coloré (dégradé de la fiche joueur), teinté blanc plutôt
+ * que carte pour ne pas juste redevenir opaque.
+ */
+@layer utilities {
+  .glass {
+    background: color-mix(in oklab, var(--card) 62%, transparent);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+    box-shadow:
+      0 8px 32px -12px color-mix(in oklab, var(--foreground) 20%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 60%, transparent);
+  }
+
+  .glass-on-color {
+    background: color-mix(in oklab, white 18%, transparent);
+    backdrop-filter: blur(16px) saturate(1.6);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6);
+    border: 1px solid color-mix(in oklab, white 30%, transparent);
+    box-shadow:
+      0 4px 16px -4px color-mix(in oklab, black 20%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 35%, transparent);
+  }
+
+  .glass-surface {
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid color-mix(in oklab, white 35%, transparent);
+    box-shadow:
+      0 2px 8px -2px color-mix(in oklab, var(--foreground) 15%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 45%, transparent);
+  }
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { ChevronLeft, ChevronRight, FileText, Home, Search, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,26 +15,37 @@ const NAV_ITEMS = [
 
 const STORAGE_KEY = "scoutpro:sidebar-collapsed";
 
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getSnapshot() {
+  return localStorage.getItem(STORAGE_KEY) === "1";
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export function LeftSidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    setCollapsed(localStorage.getItem(STORAGE_KEY) === "1");
-  }, []);
+  // localStorage n'existe pas côté serveur — useSyncExternalStore rend
+  // toujours getServerSnapshot() au premier passage (SSR + hydratation),
+  // évitant le mismatch qu'un useEffect+setState provoquerait ici.
+  const collapsed = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   function toggle() {
-    setCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
-      return next;
-    });
+    localStorage.setItem(STORAGE_KEY, collapsed ? "0" : "1");
+    // "storage" ne se déclenche jamais dans l'onglet qui écrit lui-même —
+    // on le redéclenche à la main pour que ce clic se reflète immédiatement.
+    window.dispatchEvent(new StorageEvent("storage"));
   }
 
   return (
     <nav
       className={cn(
-        "hidden shrink-0 flex-col border-r border-border bg-card py-4 transition-[width] duration-150 md:flex",
+        "glass hidden shrink-0 flex-col py-4 transition-[width] duration-150 md:flex",
         collapsed ? "w-16 px-2" : "w-56 px-3",
       )}
     >

@@ -38,7 +38,13 @@ export function PlayerFutCard({
 }) {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-primary via-primary/85 to-primary/55 p-5 text-primary-foreground shadow-lg">
-      <div className="absolute top-4 left-4 flex flex-col items-center leading-none">
+      {/* Reflet diagonal façon verre — pure décoration, ne doit jamais intercepter les clics */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/30 via-white/5 to-transparent"
+      />
+
+      <div className="glass-on-color absolute top-4 left-4 flex flex-col items-center gap-0 rounded-lg px-2.5 py-1.5 leading-none">
         <span className="text-2xl font-bold">{player.position ?? "?"}</span>
         {player.shirtNumber && <span className="mt-1 text-xs font-medium opacity-80">#{player.shirtNumber}</span>}
       </div>
@@ -67,22 +73,22 @@ export function PlayerFutCard({
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 border-t border-primary-foreground/20 pt-4 text-center">
-        <div>
+      <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+        <div className="glass-on-color rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Âge</p>
           <p className="text-sm font-semibold">{age ?? "—"}</p>
         </div>
-        <div>
+        <div className="glass-on-color rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Taille</p>
           <p className="text-sm font-semibold">{player.heightCm ? `${player.heightCm} cm` : "—"}</p>
         </div>
-        <div>
+        <div className="glass-on-color rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Pied</p>
           <p className="text-sm font-semibold">{player.preferredFoot ? FOOT_LABELS[player.preferredFoot] : "—"}</p>
         </div>
       </div>
 
-      <div className="mt-auto rounded-lg bg-primary-foreground/10 px-3 py-2 text-center">
+      <div className="glass-on-color mt-auto rounded-lg px-3 py-2 text-center">
         <p className="text-xs opacity-70">Valeur marchande</p>
         <p className="text-sm font-semibold">{formatCompactEur(player.marketValueEur)}</p>
       </div>

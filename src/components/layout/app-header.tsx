@@ -15,7 +15,7 @@ export function AppHeader({
   user: Pick<User, "firstName" | "lastName" | "email"> | null;
 }) {
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6">
+    <header className="glass sticky top-0 z-10 flex items-center gap-4 px-4 py-3 sm:px-6">
       <Logo />
 
       <HeaderSearch />
