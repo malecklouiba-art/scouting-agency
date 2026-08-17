@@ -2,7 +2,7 @@ import { prisma } from "@/server/db/prisma";
 import { calculateAge } from "@/lib/age";
 import { positionLabel } from "@/lib/positions";
 import { FOOT_LABELS } from "@/lib/foot";
-import { RECOMMENDATION_LABELS } from "@/lib/recommendation";
+import { RECOMMENDATION_BADGE_VARIANT, RECOMMENDATION_LABELS } from "@/lib/recommendation";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PlayerTabs } from "@/components/players/player-tabs";
 import { CreateReportForm } from "@/components/players/create-report-form";
@@ -168,7 +168,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
                   </div>
                   {report.comment && <p className="text-sm text-muted-foreground">{report.comment}</p>}
                   {report.recommendation && (
-                    <Badge variant="secondary">{RECOMMENDATION_LABELS[report.recommendation]}</Badge>
+                    <Badge variant={RECOMMENDATION_BADGE_VARIANT[report.recommendation]}>
+                      {RECOMMENDATION_LABELS[report.recommendation]}
+                    </Badge>
                   )}
                 </Card>
               ))}

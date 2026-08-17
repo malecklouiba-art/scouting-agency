@@ -40,10 +40,13 @@ export async function searchPlayers(criteria: PlayerSearchCriteria) {
 
   const players = await prisma.player.findMany({
     where: {
+      // La recherche par nom couvre aussi le club (le champ du header promet
+      // "un joueur, un club" — un seul champ, donc une seule requête OR).
       OR: criteria.nameQuery
         ? [
             { firstName: { contains: criteria.nameQuery, mode: "insensitive" } },
             { lastName: { contains: criteria.nameQuery, mode: "insensitive" } },
+            { club: { name: { contains: criteria.nameQuery, mode: "insensitive" } } },
           ]
         : undefined,
       position: criteria.position || undefined,

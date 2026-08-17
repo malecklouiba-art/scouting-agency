@@ -4,7 +4,7 @@ import { prisma } from "@/server/db/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RECOMMENDATION_LABELS } from "@/lib/recommendation";
+import { RECOMMENDATION_BADGE_VARIANT, RECOMMENDATION_LABELS } from "@/lib/recommendation";
 
 export default async function ReportsPage() {
   const user = await getCurrentUser();
@@ -47,7 +47,9 @@ export default async function ReportsPage() {
                   </p>
                 </div>
                 {report.recommendation && (
-                  <Badge variant="secondary">{RECOMMENDATION_LABELS[report.recommendation] ?? report.recommendation}</Badge>
+                  <Badge variant={RECOMMENDATION_BADGE_VARIANT[report.recommendation]}>
+                    {RECOMMENDATION_LABELS[report.recommendation]}
+                  </Badge>
                 )}
               </Card>
             </Link>

@@ -6,14 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { removeFromShortlistAction } from "@/server/actions/shortlist.actions";
+import { SHORTLIST_STATUS_BADGE_VARIANT, SHORTLIST_STATUS_LABELS } from "@/lib/shortlist-status";
 import type { PlayerSummary } from "@/server/services/player.service";
-
-const STATUS_LABELS: Record<string, string> = {
-  TO_WATCH: "À suivre",
-  INTERESTING: "Intéressant",
-  PRIORITY: "Prioritaire",
-  DISCARDED: "Écarté",
-};
+import type { ShortlistStatus } from "@/generated/prisma/client";
 
 export function ShortlistRow({
   player,
@@ -22,7 +17,7 @@ export function ShortlistRow({
   addedAt,
 }: {
   player: PlayerSummary;
-  status: string;
+  status: ShortlistStatus;
   note: string | null;
   addedAt: string;
 }) {
@@ -43,7 +38,7 @@ export function ShortlistRow({
       </Link>
 
       <div className="flex items-center gap-2">
-        <Badge variant="secondary">{STATUS_LABELS[status] ?? status}</Badge>
+        <Badge variant={SHORTLIST_STATUS_BADGE_VARIANT[status]}>{SHORTLIST_STATUS_LABELS[status]}</Badge>
         <span className="text-xs text-muted-foreground">{addedAt}</span>
         <Button
           size="sm"

@@ -6,3 +6,11 @@ export const RECOMMENDATION_LABELS: Record<ReportRecommendation, string> = {
   PRIORITY: "Prioritaire",
   DISCARD: "Écarté",
 };
+
+/** Hiérarchie visuelle : une recommandation Prioritaire doit se voir au premier coup d'œil, un Écarté doit s'effacer. */
+export const RECOMMENDATION_BADGE_VARIANT: Record<ReportRecommendation, "default" | "secondary" | "outline" | "destructive"> = {
+  TO_WATCH: "outline",
+  INTERESTING: "secondary",
+  PRIORITY: "default",
+  DISCARD: "destructive",
+};

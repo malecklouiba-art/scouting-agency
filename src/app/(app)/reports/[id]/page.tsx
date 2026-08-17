@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/server/db/prisma";
 import { positionLabel } from "@/lib/positions";
-import { RECOMMENDATION_LABELS } from "@/lib/recommendation";
+import { RECOMMENDATION_BADGE_VARIANT, RECOMMENDATION_LABELS } from "@/lib/recommendation";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,9 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
       <Card className="flex flex-col gap-4 p-5">
         {report.recommendation && (
           <div>
-            <Badge variant="secondary">{RECOMMENDATION_LABELS[report.recommendation]}</Badge>
+            <Badge variant={RECOMMENDATION_BADGE_VARIANT[report.recommendation]}>
+              {RECOMMENDATION_LABELS[report.recommendation]}
+            </Badge>
           </div>
         )}
 
