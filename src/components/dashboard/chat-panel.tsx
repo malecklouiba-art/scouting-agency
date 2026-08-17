@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,11 @@ export function ChatPanel({ firstName }: { firstName: string | null }) {
   const [conversationId, setConversationId] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages]);
 
   async function sendMessage(text: string) {
     const trimmed = text.trim();
@@ -122,7 +127,7 @@ export function ChatPanel({ firstName }: { firstName: string | null }) {
       )}
 
       {!isEmpty && (
-        <div className="flex flex-col gap-4">
+        <div ref={scrollRef} className="flex max-h-[65vh] flex-col gap-4 overflow-y-auto">
           {messages.map((message, index) => (
             <div
               key={index}

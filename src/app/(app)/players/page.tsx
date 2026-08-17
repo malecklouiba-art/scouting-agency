@@ -35,10 +35,17 @@ export default async function PlayersPage({ searchParams }: PlayersPageProps) {
       <PlayersFilters />
 
       {results.length === 0 ? (
-        <EmptyState
-          title="Aucun joueur pour l'instant"
-          description="La base ScoutPro se remplit via une synchronisation depuis le Data Provider. Une fois les données synchronisées, vos recherches et filtres s'appliqueront ici."
-        />
+        params.q || params.position || params.foot ? (
+          <EmptyState
+            title="Aucun résultat"
+            description="Aucun joueur ne correspond à ces critères. Essayez d'élargir la recherche ou de retirer un filtre."
+          />
+        ) : (
+          <EmptyState
+            title="Aucun joueur pour l'instant"
+            description="La base ScoutPro se remplit via une synchronisation depuis le Data Provider, ou en important un CSV. Une fois des joueurs présents, vos recherches et filtres s'appliqueront ici."
+          />
+        )
       ) : (
         <div className="flex flex-col gap-2">
           {results.map(({ player, score }) => (
