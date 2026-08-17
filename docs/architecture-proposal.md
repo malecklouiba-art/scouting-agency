@@ -527,7 +527,9 @@ Aucun ML. Formule pondérée et explicable, calculée en TypeScript pur dans `sc
 | Shortlist | `/shortlist` | Joueurs, score, statut (À suivre / Intéressant / Prioritaire / Écarté), date d'ajout, dernière note |
 | Rapports | `/reports`, `/reports/[id]` | Formulaire (contexte, note, points forts/faibles, commentaire, recommandation) + génération assistée par Gemini depuis texte libre |
 
-Principes transverses (sections 19–20) appliqués à tous les écrans : palette sombre premium (`#0F1720` fond, `#17212B` surface, `#1D2935` surface secondaire, `#F8FAFC` texte, `#94A3B8` texte secondaire, accent vert lime), densité d'information inspirée FM mais jamais surchargée, maximum 1 à 3 actions pour toute tâche principale, textes simples sans jargon, confirmation pour toute action de mutation, recherche toujours accessible depuis le header.
+Principes transverses (sections 19–20) appliqués à tous les écrans : densité d'information inspirée FM mais jamais surchargée, maximum 1 à 3 actions pour toute tâche principale, textes simples sans jargon, confirmation pour toute action de mutation, recherche toujours accessible depuis le header (repliée sous `sm:` — la recherche complète reste sur `/players`, à une touche via la navbar).
+
+**Mise à jour post-MVP (demande explicite) :** la palette sombre premium d'origine (`#0F1720` fond, `#17212B` surface, `#1D2935` surface secondaire) a été remplacée par un thème clair unique — fond `#F8FAFC`, surfaces blanches, accent vert olive `#65A30D` (assombri depuis le lime `#A3E635` d'origine pour rester lisible sur fond clair). Toujours un seul thème fixe, pas de bascule clair/sombre. La navigation principale (Accueil/Joueurs/Shortlist/Rapports), auparavant des pastilles dans le header, est maintenant une navbar fixe en bas d'écran (`src/components/layout/bottom-nav.tsx`), seule barre de nav sur toutes les tailles d'écran — le header ne garde que logo, recherche et compte.
 
 ## 8. Authentification & multi-tenant
 
