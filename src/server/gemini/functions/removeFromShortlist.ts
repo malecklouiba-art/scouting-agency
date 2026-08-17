@@ -1,4 +1,6 @@
 import { Type } from "@google/genai";
+import { removePlayerFromShortlist } from "@/server/services/shortlist.service";
+import { requireStr } from "./args";
 import type { ScoutProFunction } from "./types";
 
 export const removeFromShortlist: ScoutProFunction = {
@@ -13,5 +15,13 @@ export const removeFromShortlist: ScoutProFunction = {
       },
       required: ["playerId"],
     },
+  },
+  execute: async (args, ctx) => {
+    await removePlayerFromShortlist({
+      organizationId: ctx.organizationId,
+      ownerId: ctx.userId,
+      playerId: requireStr(args, "playerId"),
+    });
+    return { removed: true };
   },
 };

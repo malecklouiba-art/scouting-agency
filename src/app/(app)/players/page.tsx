@@ -8,19 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EmptyState } from "@/components/shared/empty-state";
-
-const POSITIONS = [
-  { value: "GK", label: "Gardien" },
-  { value: "CB", label: "Défenseur central" },
-  { value: "LB", label: "Latéral gauche" },
-  { value: "RB", label: "Latéral droit" },
-  { value: "DM", label: "Milieu défensif" },
-  { value: "CM", label: "Milieu central" },
-  { value: "AM", label: "Milieu offensif" },
-  { value: "LW", label: "Ailier gauche" },
-  { value: "RW", label: "Ailier droit" },
-  { value: "ST", label: "Attaquant" },
-];
+import { POSITIONS } from "@/lib/positions";
 
 export default function PlayersPage() {
   return (
@@ -45,7 +33,7 @@ export default function PlayersPage() {
           </SelectTrigger>
           <SelectContent>
             {POSITIONS.map((position) => (
-              <SelectItem key={position.value} value={position.value}>
+              <SelectItem key={position.code} value={position.code}>
                 {position.label}
               </SelectItem>
             ))}

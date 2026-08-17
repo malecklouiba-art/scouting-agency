@@ -1,4 +1,6 @@
 import { Type } from "@google/genai";
+import { addPlayerToShortlist } from "@/server/services/shortlist.service";
+import { oneOf, requireStr, str } from "./args";
 import type { ScoutProFunction } from "./types";
 
 export const addToShortlist: ScoutProFunction = {
@@ -20,5 +22,15 @@ export const addToShortlist: ScoutProFunction = {
       },
       required: ["playerId"],
     },
+  },
+  execute: async (args, ctx) => {
+    const shortlistPlayer = await addPlayerToShortlist({
+      organizationId: ctx.organizationId,
+      ownerId: ctx.userId,
+      playerId: requireStr(args, "playerId"),
+      status: oneOf(args, "status", ["TO_WATCH", "INTERESTING", "PRIORITY", "DISCARDED"] as const),
+      note: str(args, "note"),
+    });
+    return { added: true, shortlistPlayerId: shortlistPlayer.id };
   },
 };

@@ -1,5 +1,6 @@
 import { prisma } from "@/server/db/prisma";
 import { DataSource, SyncStatus } from "@/generated/prisma/client";
+import { positionCodeFromSource } from "@/lib/positions";
 import { TransfermarktProvider } from "../transfermarkt/transfermarkt.provider";
 import type { Player as PlayerDTO, PlayerHistory as PlayerHistoryDTO, Transfer as TransferDTO } from "../types";
 import { finishSyncLog, startSyncLog } from "./syncLogger";
@@ -40,8 +41,13 @@ async function upsertPlayer(dto: PlayerDTO): Promise<{ id: string; wasCreated: b
     secondaryNationalities: dto.secondaryNationalities,
     heightCm: dto.heightCm,
     preferredFoot: dto.preferredFoot,
-    position: dto.position,
-    secondaryPositions: dto.secondaryPositions,
+    // Transfermarkt donne des libellés anglais bruts ("Centre-Back") ;
+    // normalisés vers notre taxonomie interne (voir src/lib/positions.ts) ici
+    // plutôt que dans le mapper, pour que celui-ci reste indépendant de l'app.
+    position: positionCodeFromSource(dto.position),
+    secondaryPositions: dto.secondaryPositions
+      .map((position) => positionCodeFromSource(position))
+      .filter((code): code is string => code !== null),
     shirtNumber: dto.shirtNumber,
     marketValueEur: dto.marketValueEur,
     photoUrl: dto.photoUrl,

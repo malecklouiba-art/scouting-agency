@@ -1,4 +1,8 @@
 import { Type } from "@google/genai";
+import { positionCodeFromLabel } from "@/lib/positions";
+import { searchPlayers as searchPlayersService } from "@/server/services/search.service";
+import { toPlayerSummary } from "@/server/services/player.service";
+import { num, oneOf, str, strArray } from "./args";
 import type { ScoutProFunction } from "./types";
 
 export const searchPlayers: ScoutProFunction = {
@@ -33,5 +37,27 @@ export const searchPlayers: ScoutProFunction = {
         limit: { type: Type.INTEGER, description: "Nombre maximum de résultats. Défaut 10." },
       },
     },
+  },
+  execute: async (args) => {
+    const results = await searchPlayersService({
+      position: positionCodeFromLabel(str(args, "position")) ?? undefined,
+      ageMin: num(args, "ageMin"),
+      ageMax: num(args, "ageMax"),
+      nationalities: strArray(args, "nationalities"),
+      preferredFoot: oneOf(args, "preferredFoot", ["LEFT", "RIGHT", "BOTH"] as const),
+      minMarketValueEur: num(args, "minMarketValueEur"),
+      maxMarketValueEur: num(args, "maxMarketValueEur"),
+      clubName: str(args, "clubName"),
+      limit: num(args, "limit"),
+    });
+
+    return {
+      count: results.length,
+      players: results.map(({ player, score, breakdown }) => ({
+        ...toPlayerSummary(player),
+        score,
+        scoreBreakdown: breakdown,
+      })),
+    };
   },
 };
