@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FOOT_LABELS } from "@/lib/foot";
+import { placeholderPhotoUrl } from "@/lib/avatar";
 import { FollowButton } from "@/components/players/follow-button";
 import type { PlayerSummary } from "@/server/services/player.service";
 
@@ -40,8 +42,20 @@ export function PlayersTable({
           {rows.map(({ player, score, isFollowing }) => (
             <tr key={player.id} className="border-b border-border last:border-0 hover:bg-secondary/40">
               <td className="px-3 py-2">
-                <Link href={`/players/${player.id}`} className="font-medium text-foreground hover:text-primary">
-                  {player.firstName} {player.lastName}
+                <Link href={`/players/${player.id}`} className="flex items-center gap-2.5">
+                  <Avatar size="sm">
+                    <AvatarImage
+                      src={player.photoUrl ?? placeholderPhotoUrl(player.id)}
+                      alt={`${player.firstName} ${player.lastName}`}
+                    />
+                    <AvatarFallback className="text-[10px]">
+                      {player.firstName[0]}
+                      {player.lastName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium text-foreground hover:text-primary">
+                    {player.firstName} {player.lastName}
+                  </span>
                 </Link>
               </td>
               <td className="px-3 py-2 text-muted-foreground">{player.positionLabel ?? "—"}</td>

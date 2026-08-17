@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/players/follow-button";
+import { placeholderPhotoUrl } from "@/lib/avatar";
 import { FOOT_LABELS } from "@/lib/foot";
 import type { Club, Player } from "@/generated/prisma/client";
 
@@ -49,7 +50,10 @@ export function PlayerFutCard({
 
       <div className="mt-10 flex flex-col items-center gap-3">
         <Avatar className="size-28 border-4 border-primary-foreground/30 shadow-md">
-          <AvatarImage src={player.photoUrl ?? undefined} alt={`${player.firstName} ${player.lastName}`} />
+          <AvatarImage
+            src={player.photoUrl ?? placeholderPhotoUrl(player.id)}
+            alt={`${player.firstName} ${player.lastName}`}
+          />
           <AvatarFallback className="bg-primary-foreground/10 text-3xl font-semibold">
             {player.firstName[0]}
             {player.lastName[0]}
