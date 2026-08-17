@@ -4,6 +4,7 @@ import { PlayersFilters } from "@/components/players/players-filters";
 import { PlayerCard } from "@/components/players/player-card";
 import { PlayersTable } from "@/components/players/players-table";
 import { ImportExportButtons } from "@/components/players/import-export-buttons";
+import { SeedDemoDataButton } from "@/components/players/seed-demo-data-button";
 import { EmptyState } from "@/components/shared/empty-state";
 import { searchPlayers } from "@/server/services/search.service";
 import { toPlayerSummary } from "@/server/services/player.service";
@@ -63,7 +64,12 @@ export default async function PlayersPage({ searchParams }: PlayersPageProps) {
               Cartes
             </Link>
           </div>
-          {isAdmin && <ImportExportButtons />}
+          {isAdmin && (
+            <div className="flex flex-wrap items-start gap-2">
+              <SeedDemoDataButton />
+              <ImportExportButtons />
+            </div>
+          )}
         </div>
       </div>
 
