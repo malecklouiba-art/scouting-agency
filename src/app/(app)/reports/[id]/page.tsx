@@ -20,7 +20,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
 
   if (!report) {
     return (
-      <div className="mx-auto flex max-w-3xl flex-col gap-6">
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Rapport</h1>
         <EmptyState title="Rapport introuvable" description="Ce rapport n'existe pas ou a été supprimé." />
       </div>
@@ -28,7 +28,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6">
+    <div className="mx-auto flex max-w-4xl flex-col gap-6">
       <div>
         <Link href={`/players/${report.player.id}`} className="text-sm text-muted-foreground hover:text-foreground">
           ← {report.player.firstName} {report.player.lastName}

@@ -57,7 +57,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
 
   if (!player) {
     return (
-      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6">
         <EmptyState
           title="Joueur introuvable"
           description="Ce joueur n'existe pas ou n'a pas encore été synchronisé dans la base ScoutPro."
@@ -192,7 +192,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
   ];
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 md:flex-row md:items-start">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-start">
       <div className="md:w-72 md:shrink-0">
         <PlayerFutCard player={player} club={player.club} age={age} isFollowing={isFollowing} />
       </div>
