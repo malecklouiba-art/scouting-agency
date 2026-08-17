@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -76,7 +76,8 @@ export function ChatPanel({ firstName }: { firstName: string | null }) {
     }
   }
 
-  function handleSubmit(event: FormEvent) {
+  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") return;
     event.preventDefault();
     void sendMessage(value);
   }
@@ -162,20 +163,26 @@ export function ChatPanel({ firstName }: { firstName: string | null }) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full">
+      <div className="w-full">
         <Card className="flex flex-row items-center gap-2 p-2">
           <Input
             value={value}
             onChange={(event) => setValue(event.target.value)}
+            onKeyDown={handleInputKeyDown}
             placeholder="Je cherche un défenseur central de moins de 23 ans, rapide, bon dans les duels..."
             className="h-11 border-none bg-transparent shadow-none focus-visible:ring-0"
             disabled={loading}
           />
-          <Button type="submit" size="icon" disabled={loading || value.trim().length === 0}>
+          <Button
+            type="button"
+            size="icon"
+            disabled={loading || value.trim().length === 0}
+            onClick={() => void sendMessage(value)}
+          >
             <ArrowUp className="size-4" />
           </Button>
         </Card>
-      </form>
+      </div>
 
       {isEmpty && (
         <div className="flex flex-wrap justify-center gap-2">
