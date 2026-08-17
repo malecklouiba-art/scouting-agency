@@ -5,9 +5,10 @@ import { ArrowUp, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { confirmPendingActionAction } from "@/server/actions/chat.actions";
+import { PlayerCard } from "@/components/players/player-card";
+import type { PlayerSummary } from "@/server/services/player.service";
 
 const EXAMPLES = [
   "Trouve-moi des défenseurs U23 en Belgique.",
@@ -16,13 +17,7 @@ const EXAMPLES = [
   "Trouve des joueurs similaires à ce profil.",
 ];
 
-interface PlayerResult {
-  id: string;
-  firstName: string;
-  lastName: string;
-  positionLabel: string | null;
-  clubName: string | null;
-  age: number | null;
+interface PlayerResult extends PlayerSummary {
   score?: number;
 }
 
@@ -144,19 +139,7 @@ export function ChatPanel({ firstName }: { firstName: string | null }) {
               {message.players && message.players.length > 0 && (
                 <div className="flex w-full flex-col gap-2">
                   {message.players.map((player) => (
-                    <Card key={player.id} className="flex flex-row items-center justify-between gap-3 p-3">
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {player.firstName} {player.lastName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {[player.positionLabel, player.clubName, player.age ? `${player.age} ans` : null]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                      </div>
-                      {typeof player.score === "number" && <Badge variant="secondary">{player.score}/100</Badge>}
-                    </Card>
+                    <PlayerCard key={player.id} player={player} score={player.score} />
                   ))}
                 </div>
               )}

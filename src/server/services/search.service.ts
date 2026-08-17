@@ -4,6 +4,7 @@ import { scorePlayer } from "./scoring.service";
 
 /** Critères structurés — position attendue en code interne (voir src/lib/positions.ts), pas en libellé libre. */
 export interface PlayerSearchCriteria {
+  nameQuery?: string;
   position?: string;
   ageMin?: number;
   ageMax?: number;
@@ -39,6 +40,12 @@ export async function searchPlayers(criteria: PlayerSearchCriteria) {
 
   const players = await prisma.player.findMany({
     where: {
+      OR: criteria.nameQuery
+        ? [
+            { firstName: { contains: criteria.nameQuery, mode: "insensitive" } },
+            { lastName: { contains: criteria.nameQuery, mode: "insensitive" } },
+          ]
+        : undefined,
       position: criteria.position || undefined,
       dateOfBirth: dateOfBirthRangeFromAge(criteria.ageMin, criteria.ageMax),
       nationality: criteria.nationalities?.length ? { in: criteria.nationalities } : undefined,
@@ -49,6 +56,7 @@ export async function searchPlayers(criteria: PlayerSearchCriteria) {
       club: criteria.clubName ? { name: { contains: criteria.clubName, mode: "insensitive" } } : undefined,
     },
     include: { club: true },
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
     take: CANDIDATE_CAP,
   });
 
