@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/players/follow-button";
 import { placeholderPhotoUrl } from "@/lib/avatar";
 import { FOOT_LABELS } from "@/lib/foot";
@@ -49,16 +48,12 @@ export function PlayerFutCard({
       </div>
 
       <div className="mt-10 flex flex-col items-center gap-3">
-        <Avatar className="size-28 border-4 border-primary-foreground/30 shadow-md">
-          <AvatarImage
-            src={player.photoUrl ?? placeholderPhotoUrl(player.id)}
-            alt={`${player.firstName} ${player.lastName}`}
-          />
-          <AvatarFallback className="bg-primary-foreground/10 text-3xl font-semibold">
-            {player.firstName[0]}
-            {player.lastName[0]}
-          </AvatarFallback>
-        </Avatar>
+        {/* eslint-disable-next-line @next/next/no-img-element -- external placeholder/synced photo, full square shown deliberately (no circular crop) */}
+        <img
+          src={player.photoUrl ?? placeholderPhotoUrl(player.id)}
+          alt={`${player.firstName} ${player.lastName}`}
+          className="size-44 rounded-2xl border-4 border-primary-foreground/30 bg-primary-foreground/10 object-contain shadow-md"
+        />
 
         <div className="text-center">
           <h1 className="text-lg font-bold tracking-wide uppercase">
