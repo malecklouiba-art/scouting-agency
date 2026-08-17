@@ -1,7 +1,7 @@
 import { prisma } from "@/server/db/prisma";
 import { calculateAge } from "@/lib/age";
 import { positionLabel } from "@/lib/positions";
-import type { Club, Player } from "@/generated/prisma/client";
+import type { Club, Foot, Player } from "@/generated/prisma/client";
 
 export interface PlayerSummary {
   id: string;
@@ -12,6 +12,7 @@ export interface PlayerSummary {
   clubName: string | null;
   age: number | null;
   nationality: string | null;
+  preferredFoot: Foot | null;
   marketValueEur: number | null;
   photoUrl: string | null;
 }
@@ -28,6 +29,7 @@ export function toPlayerSummary(player: PlayerWithClub): PlayerSummary {
     clubName: player.club?.name ?? null,
     age: calculateAge(player.dateOfBirth),
     nationality: player.nationality,
+    preferredFoot: player.preferredFoot,
     marketValueEur: player.marketValueEur,
     photoUrl: player.photoUrl,
   };
