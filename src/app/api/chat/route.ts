@@ -1,4 +1,4 @@
-import { createUserContent, type Content } from "@google/genai";
+import { ApiError, createUserContent, type Content } from "@google/genai";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { prisma } from "@/server/db/prisma";
@@ -45,7 +45,12 @@ export async function POST(request: Request) {
     result = await runChatTurn(history, { userId: user.id, organizationId: user.organizationId });
   } catch (error) {
     console.error("runChatTurn failed", error);
-    result = { reply: "L'assistant IA est momentanément indisponible. Réessaie dans un instant." };
+    result = {
+      reply:
+        error instanceof ApiError && error.status === 429
+          ? "Le quota gratuit de l'API Gemini est épuisé pour aujourd'hui. Réessaie plus tard, ou passe à un plan payant sur Google AI Studio pour lever la limite."
+          : "L'assistant IA est momentanément indisponible. Réessaie dans un instant.",
+    };
   }
 
   await prisma.message.create({
