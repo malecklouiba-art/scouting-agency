@@ -2,8 +2,10 @@ import { prisma } from "@/server/db/prisma";
 import { calculateAge } from "@/lib/age";
 import { positionLabel } from "@/lib/positions";
 import { FOOT_LABELS } from "@/lib/foot";
+import { RECOMMENDATION_LABELS } from "@/lib/recommendation";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PlayerTabs } from "@/components/players/player-tabs";
+import { CreateReportForm } from "@/components/players/create-report-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -145,25 +147,35 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
     {
       id: "rapports",
       label: "Rapports",
-      content:
-        player.reports.length === 0 ? (
-          <EmptyState title="Aucun rapport" description="Aucun rapport de scouting n'a encore été créé pour ce joueur." />
-        ) : (
-          <div className="flex flex-col gap-3">
-            {player.reports.map((report) => (
-              <Card key={report.id} className="flex flex-col gap-2 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">
-                    {report.author.firstName ?? report.author.email}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{formatDate(report.date)}</span>
-                </div>
-                {report.comment && <p className="text-sm text-muted-foreground">{report.comment}</p>}
-                {report.recommendation && <Badge variant="secondary">{report.recommendation}</Badge>}
-              </Card>
-            ))}
-          </div>
-        ),
+      content: (
+        <div className="flex flex-col gap-4">
+          <CreateReportForm playerId={player.id} />
+
+          {player.reports.length === 0 ? (
+            <EmptyState
+              title="Aucun rapport"
+              description="Aucun rapport de scouting n'a encore été créé pour ce joueur."
+            />
+          ) : (
+            <div className="flex flex-col gap-3">
+              {player.reports.map((report) => (
+                <Card key={report.id} className="flex flex-col gap-2 p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">
+                      {report.author.firstName ?? report.author.email}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{formatDate(report.date)}</span>
+                  </div>
+                  {report.comment && <p className="text-sm text-muted-foreground">{report.comment}</p>}
+                  {report.recommendation && (
+                    <Badge variant="secondary">{RECOMMENDATION_LABELS[report.recommendation]}</Badge>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      ),
     },
   ];
 
