@@ -48,11 +48,15 @@ export function PlayerFutCard({
       </div>
 
       <div className="mt-10 flex flex-col items-center gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element -- external placeholder/synced photo, full square shown deliberately (no circular crop) */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- external placeholder/synced photo, faded into the card via mask instead of a boxed frame */}
         <img
           src={player.photoUrl ?? placeholderPhotoUrl(player.id)}
           alt={`${player.firstName} ${player.lastName}`}
-          className="size-44 rounded-2xl border-4 border-primary-foreground/30 bg-primary-foreground/10 object-contain shadow-md"
+          className="size-44 object-contain"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 55%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 55%, transparent 100%)",
+          }}
         />
 
         <div className="text-center">
