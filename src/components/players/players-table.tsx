@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FOOT_LABELS } from "@/lib/foot";
+import { FollowButton } from "@/components/players/follow-button";
 import type { PlayerSummary } from "@/server/services/player.service";
 
 function formatCompactEur(value: number | null): string {
@@ -12,12 +13,16 @@ function formatCompactEur(value: number | null): string {
   }).format(value);
 }
 
-export function PlayersTable({ rows }: { rows: Array<{ player: PlayerSummary; score?: number }> }) {
+export function PlayersTable({
+  rows,
+}: {
+  rows: Array<{ player: PlayerSummary; score?: number; isFollowing?: boolean }>;
+}) {
   const showScore = rows.some((row) => typeof row.score === "number");
 
   return (
     <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
-      <table className="w-full min-w-[720px] border-collapse text-sm">
+      <table className="w-full min-w-[760px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-border bg-secondary/60 text-left text-xs text-muted-foreground">
             <th className="px-3 py-2 font-medium">Joueur</th>
@@ -28,10 +33,11 @@ export function PlayersTable({ rows }: { rows: Array<{ player: PlayerSummary; sc
             <th className="px-3 py-2 font-medium">Pied</th>
             <th className="px-3 py-2 text-right font-medium">Valeur</th>
             {showScore && <th className="px-3 py-2 text-right font-medium">Score</th>}
+            <th className="px-3 py-2" />
           </tr>
         </thead>
         <tbody>
-          {rows.map(({ player, score }) => (
+          {rows.map(({ player, score, isFollowing }) => (
             <tr key={player.id} className="border-b border-border last:border-0 hover:bg-secondary/40">
               <td className="px-3 py-2">
                 <Link href={`/players/${player.id}`} className="font-medium text-foreground hover:text-primary">
@@ -51,6 +57,14 @@ export function PlayersTable({ rows }: { rows: Array<{ player: PlayerSummary; sc
                   {typeof score === "number" ? `${score}/100` : "—"}
                 </td>
               )}
+              <td className="px-3 py-2 text-right">
+                <FollowButton
+                  playerId={player.id}
+                  initialFollowing={isFollowing ?? false}
+                  size="icon-sm"
+                  label={false}
+                />
+              </td>
             </tr>
           ))}
         </tbody>

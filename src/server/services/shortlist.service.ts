@@ -36,6 +36,22 @@ export async function removePlayerFromShortlist(params: {
   await prisma.shortlistPlayer.deleteMany({ where: { shortlistId: shortlist.id, playerId: params.playerId } });
 }
 
+export async function getFollowedPlayerIds(params: {
+  organizationId: string;
+  ownerId: string;
+}): Promise<Set<string>> {
+  const shortlist = await prisma.shortlist.findFirst({
+    where: { organizationId: params.organizationId, ownerId: params.ownerId },
+  });
+  if (!shortlist) return new Set();
+
+  const entries = await prisma.shortlistPlayer.findMany({
+    where: { shortlistId: shortlist.id },
+    select: { playerId: true },
+  });
+  return new Set(entries.map((entry) => entry.playerId));
+}
+
 export async function getShortlistPlayers(params: {
   organizationId: string;
   ownerId: string;

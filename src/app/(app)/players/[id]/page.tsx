@@ -6,9 +6,11 @@ import { RECOMMENDATION_BADGE_VARIANT, RECOMMENDATION_LABELS } from "@/lib/recom
 import { EmptyState } from "@/components/shared/empty-state";
 import { PlayerTabs } from "@/components/players/player-tabs";
 import { CreateReportForm } from "@/components/players/create-report-form";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PlayerFutCard } from "@/components/players/player-fut-card";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getCurrentUser } from "@/server/auth/current-user";
+import { getFollowedPlayerIds } from "@/server/services/shortlist.service";
 
 function formatEur(value: number | null): string {
   if (value === null) return "—";
@@ -34,16 +36,24 @@ function InfoItem({ label, value }: { label: string; value: string }) {
 export default async function PlayerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const player = await prisma.player.findUnique({
-    where: { id },
-    include: {
-      club: true,
-      transfers: { orderBy: { date: "desc" } },
-      history: { orderBy: { season: "desc" } },
-      stats: true,
-      reports: { include: { author: true }, orderBy: { date: "desc" } },
-    },
-  });
+  const [player, user] = await Promise.all([
+    prisma.player.findUnique({
+      where: { id },
+      include: {
+        club: true,
+        transfers: { orderBy: { date: "desc" } },
+        history: { orderBy: { season: "desc" } },
+        stats: true,
+        reports: { include: { author: true }, orderBy: { date: "desc" } },
+      },
+    }),
+    getCurrentUser(),
+  ]);
+
+  const isFollowing =
+    player && user
+      ? (await getFollowedPlayerIds({ organizationId: user.organizationId, ownerId: user.id })).has(player.id)
+      : false;
 
   if (!player) {
     return (
@@ -183,25 +193,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <Avatar className="size-16">
-          <AvatarImage src={player.photoUrl ?? undefined} alt={`${player.firstName} ${player.lastName}`} />
-          <AvatarFallback className="text-lg">
-            {player.firstName[0]}
-            {player.lastName[0]}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {player.firstName} {player.lastName}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {[positionLabel(player.position), player.club?.name, age ? `${age} ans` : null]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-        </div>
-      </div>
+      <PlayerFutCard player={player} club={player.club} age={age} isFollowing={isFollowing} />
 
       <PlayerTabs tabs={tabs} />
     </div>

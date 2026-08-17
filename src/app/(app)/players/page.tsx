@@ -8,6 +8,7 @@ import { SeedDemoDataButton } from "@/components/players/seed-demo-data-button";
 import { EmptyState } from "@/components/shared/empty-state";
 import { searchPlayers } from "@/server/services/search.service";
 import { toPlayerSummary } from "@/server/services/player.service";
+import { getFollowedPlayerIds } from "@/server/services/shortlist.service";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { cn } from "@/lib/utils";
 import type { Foot } from "@/generated/prisma/client";
@@ -21,12 +22,17 @@ export default async function PlayersPage({ searchParams }: PlayersPageProps) {
   const isAdmin = user?.role === "OWNER" || user?.role === "ADMIN";
   const view = params.view === "cards" ? "cards" : "table";
 
-  const results = await searchPlayers({
-    nameQuery: params.q || undefined,
-    position: params.position || undefined,
-    preferredFoot: (params.foot as Foot) || undefined,
-    limit: 30,
-  });
+  const [results, followedIds] = await Promise.all([
+    searchPlayers({
+      nameQuery: params.q || undefined,
+      position: params.position || undefined,
+      preferredFoot: (params.foot as Foot) || undefined,
+      limit: 30,
+    }),
+    user
+      ? getFollowedPlayerIds({ organizationId: user.organizationId, ownerId: user.id })
+      : Promise.resolve(new Set<string>()),
+  ]);
 
   const otherParams = new URLSearchParams();
   if (params.q) otherParams.set("q", params.q);
@@ -88,11 +94,22 @@ export default async function PlayersPage({ searchParams }: PlayersPageProps) {
           />
         )
       ) : view === "table" ? (
-        <PlayersTable rows={results.map(({ player, score }) => ({ player: toPlayerSummary(player), score }))} />
+        <PlayersTable
+          rows={results.map(({ player, score }) => ({
+            player: toPlayerSummary(player),
+            score,
+            isFollowing: followedIds.has(player.id),
+          }))}
+        />
       ) : (
         <div className="flex flex-col gap-2">
           {results.map(({ player, score }) => (
-            <PlayerCard key={player.id} player={toPlayerSummary(player)} score={score} />
+            <PlayerCard
+              key={player.id}
+              player={toPlayerSummary(player)}
+              score={score}
+              isFollowing={followedIds.has(player.id)}
+            />
           ))}
         </div>
       )}
