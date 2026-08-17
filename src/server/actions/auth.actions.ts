@@ -64,6 +64,7 @@ export async function signUpAction(
         firstName: firstName || null,
         lastName: lastName || null,
         organizationId: organization.id,
+        role: "OWNER",
       },
     });
   });
