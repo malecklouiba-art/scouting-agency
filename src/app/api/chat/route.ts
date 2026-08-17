@@ -40,7 +40,13 @@ export async function POST(request: Request) {
     data: { conversationId: conversation.id, role: "user", content: message },
   });
 
-  const result = await runChatTurn(history, { userId: user.id, organizationId: user.organizationId });
+  let result;
+  try {
+    result = await runChatTurn(history, { userId: user.id, organizationId: user.organizationId });
+  } catch (error) {
+    console.error("runChatTurn failed", error);
+    result = { reply: "L'assistant IA est momentanément indisponible. Réessaie dans un instant." };
+  }
 
   await prisma.message.create({
     data: {
