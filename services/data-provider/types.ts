@@ -1,11 +1,12 @@
 export type Foot = "LEFT" | "RIGHT" | "BOTH";
 
 /**
- * Recherche texte simple contre la source externe — distincte des critères
- * riches de recherche (position, âge, attributs...) utilisés par
- * search.service.ts et Gemini (Étape 10-11), qui interrogent Postgres.
+ * Recherche texte simple contre la source externe (joueurs, clubs ou
+ * compétitions) — distincte des critères riches de recherche (position,
+ * âge, attributs...) utilisés par search.service.ts et Gemini (Étape
+ * 10-11), qui interrogent Postgres.
  */
-export interface TransfermarktPlayerQuery {
+export interface TransfermarktSearchQuery {
   query: string;
   page?: number;
 }
@@ -56,4 +57,18 @@ export interface PlayerHistory {
   goals: number | null;
   assists: number | null;
   minutesPlayed: number | null;
+}
+
+export interface ClubSearchSummary {
+  sourceId: string;
+  name: string;
+  country: string | null;
+  squadSize: number | null;
+  marketValueEur: number | null;
+}
+
+export interface CompetitionSearchSummary {
+  sourceId: string;
+  name: string;
+  country: string | null;
 }

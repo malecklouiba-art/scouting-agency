@@ -69,6 +69,28 @@ export interface RawPlayerStats {
   stats: RawPlayerStat[];
 }
 
+export interface RawClubSearchResult {
+  id: string;
+  name: string;
+  country: string | null;
+  squad: number | null;
+  marketValue: string | null;
+}
+
+export interface RawClubSearch {
+  results: RawClubSearchResult[];
+}
+
+export interface RawCompetitionSearchResult {
+  id: string;
+  name: string;
+  country: string | null;
+}
+
+export interface RawCompetitionSearch {
+  results: RawCompetitionSearchResult[];
+}
+
 export class TransfermarktClient {
   private readonly baseUrl: string;
   private readonly rateLimiter: RateLimiter;
@@ -102,5 +124,13 @@ export class TransfermarktClient {
 
   getPlayerStats(playerId: string): Promise<RawPlayerStats> {
     return this.get(`/players/${playerId}/stats`);
+  }
+
+  searchClubs(query: string, page = 1): Promise<RawClubSearch> {
+    return this.get(`/clubs/search/${encodeURIComponent(query)}?page_number=${page}`);
+  }
+
+  searchCompetitions(query: string, page = 1): Promise<RawCompetitionSearch> {
+    return this.get(`/competitions/search/${encodeURIComponent(query)}?page_number=${page}`);
   }
 }

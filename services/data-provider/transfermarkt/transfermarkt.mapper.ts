@@ -1,5 +1,12 @@
-import type { Player, PlayerHistory, PlayerSearchSummary, Transfer } from "../types";
-import type { RawPlayerProfile, RawPlayerSearchResult, RawPlayerStat, RawPlayerTransfer } from "./transfermarkt.client";
+import type { ClubSearchSummary, CompetitionSearchSummary, Player, PlayerHistory, PlayerSearchSummary, Transfer } from "../types";
+import type {
+  RawClubSearchResult,
+  RawCompetitionSearchResult,
+  RawPlayerProfile,
+  RawPlayerSearchResult,
+  RawPlayerStat,
+  RawPlayerTransfer,
+} from "./transfermarkt.client";
 import {
   isLoanTransfer,
   parseDate,
@@ -79,5 +86,25 @@ export function mapPlayerStat(raw: RawPlayerStat): PlayerHistory {
     goals: raw.goals,
     assists: raw.assists,
     minutesPlayed: raw.minutesPlayed,
+  };
+}
+
+export function mapClubSearchResult(raw: RawClubSearchResult): ClubSearchSummary {
+  return {
+    sourceId: raw.id,
+    name: raw.name,
+    country: raw.country,
+    squadSize: raw.squad,
+    marketValueEur: parseMarketValueEur(raw.marketValue),
+  };
+}
+
+// Le tier n'est pas fourni par l'endpoint de recherche — Competition.tier
+// reste non renseigné pour les compétitions importées depuis Transfermarkt.
+export function mapCompetitionSearchResult(raw: RawCompetitionSearchResult): CompetitionSearchSummary {
+  return {
+    sourceId: raw.id,
+    name: raw.name,
+    country: raw.country,
   };
 }

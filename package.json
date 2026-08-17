@@ -9,7 +9,10 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "sync:players": "tsx services/data-provider/sync/runSync.ts players",
+    "sync:clubs": "tsx services/data-provider/sync/runSync.ts clubs",
+    "sync:competitions": "tsx services/data-provider/sync/runSync.ts competitions"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -39,6 +42,7 @@
     "eslint-config-next": "16.3.1",
     "prisma": "^7.9.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.33.0",
