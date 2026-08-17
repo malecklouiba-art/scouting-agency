@@ -14,7 +14,7 @@ export function PlayerTabs({ tabs }: { tabs: Tab[] }) {
   const [active, setActive] = useState(tabs[0]?.id);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full flex-col gap-4">
       <div className="flex flex-wrap gap-2 border-b border-border pb-3">
         {tabs.map((tab) => (
           <button
@@ -32,7 +32,7 @@ export function PlayerTabs({ tabs }: { tabs: Tab[] }) {
           </button>
         ))}
       </div>
-      <Card className="p-6">{tabs.find((tab) => tab.id === active)?.content}</Card>
+      <Card className="flex-1 p-6">{tabs.find((tab) => tab.id === active)?.content}</Card>
     </div>
   );
 }

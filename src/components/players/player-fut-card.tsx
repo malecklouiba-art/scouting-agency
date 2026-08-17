@@ -37,7 +37,7 @@ export function PlayerFutCard({
   isFollowing: boolean;
 }) {
   return (
-    <div className="relative mx-auto w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-b from-primary via-primary/85 to-primary/55 p-5 text-primary-foreground shadow-lg sm:mx-0">
+    <div className="relative mx-auto flex h-full w-full max-w-xs flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-primary via-primary/85 to-primary/55 p-5 text-primary-foreground shadow-lg sm:mx-0">
       <div className="absolute top-4 left-4 flex flex-col items-center leading-none">
         <span className="text-2xl font-bold">{player.position ?? "?"}</span>
         {player.shirtNumber && <span className="mt-1 text-xs font-medium opacity-80">#{player.shirtNumber}</span>}
@@ -79,7 +79,7 @@ export function PlayerFutCard({
         </div>
       </div>
 
-      <div className="mt-3 rounded-lg bg-primary-foreground/10 px-3 py-2 text-center">
+      <div className="mt-auto rounded-lg bg-primary-foreground/10 px-3 py-2 text-center">
         <p className="text-xs opacity-70">Valeur marchande</p>
         <p className="text-sm font-semibold">{formatCompactEur(player.marketValueEur)}</p>
       </div>

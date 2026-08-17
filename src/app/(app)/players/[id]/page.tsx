@@ -192,12 +192,12 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
   ];
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-6 md:flex-row md:items-start">
-      <div className="md:w-72 md:shrink-0">
+    <div className="mx-auto flex h-full max-w-[1600px] flex-col gap-6 md:flex-row">
+      <div className="flex md:w-72 md:shrink-0">
         <PlayerFutCard player={player} club={player.club} age={age} isFollowing={isFollowing} />
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
         <PlayerTabs tabs={tabs} />
       </div>
     </div>
