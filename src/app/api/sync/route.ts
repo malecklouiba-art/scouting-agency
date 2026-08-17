@@ -18,6 +18,9 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
+  if (user.role !== "OWNER" && user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Réservé aux administrateurs" }, { status: 403 });
+  }
 
   const body = await request.json();
   const entity = body?.entity;

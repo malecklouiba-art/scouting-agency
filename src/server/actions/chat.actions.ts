@@ -21,6 +21,11 @@ export async function confirmPendingActionAction(
     return { status: "error", message: "Non authentifié." };
   }
 
+  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, userId: user.id } });
+  if (!conversation) {
+    return { status: "error", message: "Conversation introuvable." };
+  }
+
   const fn = SCOUTPRO_FUNCTIONS[functionName];
   if (!fn || !fn.isMutation) {
     return { status: "error", message: "Action inconnue." };
@@ -29,10 +34,8 @@ export async function confirmPendingActionAction(
   try {
     await fn.execute(args, { userId: user.id, organizationId: user.organizationId });
   } catch (error) {
-    return {
-      status: "error",
-      message: error instanceof Error ? error.message : "Une erreur est survenue.",
-    };
+    console.error("confirmPendingActionAction failed", functionName, error);
+    return { status: "error", message: "Une erreur est survenue. Réessaie." };
   }
 
   const message = "Fait.";
