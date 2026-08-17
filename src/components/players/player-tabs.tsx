@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface Tab {
@@ -31,7 +32,7 @@ export function PlayerTabs({ tabs }: { tabs: Tab[] }) {
           </button>
         ))}
       </div>
-      {tabs.find((tab) => tab.id === active)?.content}
+      <Card className="p-6">{tabs.find((tab) => tab.id === active)?.content}</Card>
     </div>
   );
 }
