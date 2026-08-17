@@ -20,7 +20,7 @@ export default async function ReportsPage() {
   const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" });
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Rapports</h1>
         <p className="text-sm text-muted-foreground">
