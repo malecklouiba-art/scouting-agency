@@ -69,11 +69,19 @@ export async function runChatTurn(history: Content[], ctx: FunctionContext): Pro
 
   const result = await fn.execute(args, ctx);
 
+  // Gemini's "thinking" models attach a thoughtSignature to their own
+  // functionCall Part and require it echoed back verbatim on the next turn.
+  // response.functionCalls is a convenience getter that strips it, and
+  // createPartFromFunctionCall rebuilds a fresh Part with no way to set it —
+  // so pull the original Part (with its signature) straight off the candidate
+  // instead of reconstructing one, or Gemini rejects the follow-up call.
+  const functionCallPart = response.candidates?.[0]?.content?.parts?.find((part) => part.functionCall);
+
   const followUp = await genai.models.generateContent({
     model: GEMINI_MODEL,
     contents: [
       ...history,
-      createModelContent(createPartFromFunctionCall(call.name, args)),
+      createModelContent(functionCallPart ?? createPartFromFunctionCall(call.name, args)),
       createUserContent(createPartFromFunctionResponse(call.id ?? call.name, call.name, { result })),
     ],
     config: { systemInstruction: SYSTEM_INSTRUCTION },
