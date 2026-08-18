@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -16,6 +16,12 @@ export const metadata: Metadata = {
   title: "ScoutPro",
   description:
     "Trouvez et organisez les bons joueurs en langage naturel — scouting football assisté par IA.",
+};
+
+// viewport-fit=cover : sans ça, env(safe-area-inset-*) reste à 0 sur iOS et
+// la bottom nav flottante peut chevaucher la barre native de Safari.
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

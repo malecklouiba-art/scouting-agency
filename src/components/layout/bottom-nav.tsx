@@ -16,7 +16,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="glass fixed inset-x-4 bottom-4 z-20 rounded-2xl md:hidden">
+    <nav className="glass fixed inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-20 rounded-2xl md:hidden">
       <div className="mx-auto flex max-w-2xl items-stretch justify-around px-1">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);

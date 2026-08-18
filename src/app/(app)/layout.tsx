@@ -15,7 +15,7 @@ export default async function AppLayout({
       <AppHeader user={user} />
       <div className="flex flex-1">
         <LeftSidebar />
-        <main className="flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-6">{children}</main>
+        <main className="flex-1 px-4 py-6 pb-[calc(env(safe-area-inset-bottom)+6rem)] sm:px-6 md:pb-6">{children}</main>
       </div>
       <BottomNav />
     </div>

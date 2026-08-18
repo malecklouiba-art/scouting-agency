@@ -37,7 +37,7 @@ export function PlayerFutCard({
   isFollowing: boolean;
 }) {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-primary via-primary/85 to-primary/55 p-5 text-primary-foreground shadow-lg">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-neutral-800 via-neutral-900 to-black p-5 text-primary-foreground shadow-lg">
       {/* Reflet diagonal façon verre — pure décoration, ne doit jamais intercepter les clics */}
       <div
         aria-hidden
