@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: -apple-system, BlinkMacSystemFont, var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -60,7 +60,7 @@
   --card-foreground: #0f1720;
   --popover: #ffffff;
   --popover-foreground: #0f1720;
-  --primary: #65a30d;
+  --primary: #14213d;
   --primary-foreground: #f8fafc;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f1720;
@@ -72,21 +72,21 @@
   --destructive-foreground: #f8fafc;
   --border: rgba(15, 23, 32, 0.08);
   --input: rgba(15, 23, 32, 0.12);
-  --ring: #65a30d;
+  --ring: #14213d;
   --chart-1: oklch(0.269 0 0);
   --chart-2: oklch(0.439 0 0);
   --chart-3: oklch(0.556 0 0);
   --chart-4: oklch(0.708 0 0);
   --chart-5: oklch(0.87 0 0);
-  --radius: 0.625rem;
+  --radius: 0.875rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #0f1720;
-  --sidebar-primary: #65a30d;
+  --sidebar-primary: #14213d;
   --sidebar-primary-foreground: #f8fafc;
   --sidebar-accent: #e2e8f0;
   --sidebar-accent-foreground: #0f1720;
   --sidebar-border: rgba(15, 23, 32, 0.08);
-  --sidebar-ring: #65a30d;
+  --sidebar-ring: #14213d;
 }
 
 @layer base {
