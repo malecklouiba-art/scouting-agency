@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, ClipboardList, Search, Star, Users } from "lucide-react";
+import { Clock, ClipboardList, Search, Users, Wallet } from "lucide-react";
 import { prisma } from "@/server/db/prisma";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { getShortlistPlayers } from "@/server/services/shortlist.service";
@@ -7,18 +7,37 @@ import { toPlayerSummary } from "@/server/services/player.service";
 import { calculateAge } from "@/lib/age";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { InlineStat } from "@/components/dashboard/inline-stat";
 import { ActivityPill } from "@/components/dashboard/activity-pill";
+import { StatCard } from "@/components/dashboard/stat-card";
+import { StatusBreakdownCard } from "@/components/dashboard/status-breakdown-card";
+import { CoverageRatioCard } from "@/components/dashboard/coverage-ratio-card";
 import { ShortlistHighlightCard } from "@/components/dashboard/shortlist-highlight-card";
 import { RecentReportCard } from "@/components/dashboard/recent-report-card";
 import { PlayerSpotlightPanel } from "@/components/dashboard/player-spotlight-panel";
 import { EmptyState } from "@/components/shared/empty-state";
+import type { ShortlistStatus } from "@/generated/prisma/client";
+
+const EMPTY_STATUS_COUNTS: Record<ShortlistStatus, number> = {
+  PRIORITY: 0,
+  INTERESTING: 0,
+  TO_WATCH: 0,
+  DISCARDED: 0,
+};
 
 function relativeTime(date: Date): string {
   const days = Math.floor((Date.now() - date.getTime()) / 86_400_000);
   if (days <= 0) return "Aujourd'hui";
   if (days === 1) return "Hier";
   return `Il y a ${days} j`;
+}
+
+function formatCompactEur(value: number): string {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
 }
 
 export default async function DashboardPage() {
@@ -37,51 +56,31 @@ export default async function DashboardPage() {
   ]);
 
   const spotlightEntry = shortlistEntries[0] ?? null;
-  const spotlightReports = spotlightEntry
-    ? await prisma.report.findMany({
-        where: { playerId: spotlightEntry.playerId },
-        orderBy: { date: "desc" },
-      })
-    : [];
+  const [spotlightReports, playersWithReports] = await Promise.all([
+    spotlightEntry
+      ? prisma.report.findMany({ where: { playerId: spotlightEntry.playerId }, orderBy: { date: "desc" } })
+      : Promise.resolve([]),
+    shortlistEntries.length > 0
+      ? prisma.report.findMany({
+          where: { playerId: { in: shortlistEntries.map((entry) => entry.playerId) } },
+          select: { playerId: true },
+          distinct: ["playerId"],
+        })
+      : Promise.resolve([]),
+  ]);
   const latestSpotlightReport = spotlightReports[0] ?? null;
 
-  const priorityCount = shortlistEntries.filter((entry) => entry.status === "PRIORITY").length;
+  const statusCounts = shortlistEntries.reduce(
+    (counts, entry) => ({ ...counts, [entry.status]: counts[entry.status] + 1 }),
+    EMPTY_STATUS_COUNTS,
+  );
+  const totalMarketValue = shortlistEntries.reduce((sum, entry) => sum + (entry.player.marketValueEur ?? 0), 0);
+
   const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" });
   const todayLabel = new Intl.DateTimeFormat("fr-FR", { dateStyle: "full" }).format(new Date());
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-6">
-      <div className="glass flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex min-w-0 flex-col gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Clock className="size-3.5" />
-            Activité récente
-          </div>
-          {shortlistEntries.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Aucune activité pour l&apos;instant.</p>
-          ) : (
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {shortlistEntries.slice(0, 5).map((entry) => (
-                <ActivityPill
-                  key={entry.id}
-                  playerId={entry.player.id}
-                  firstName={entry.player.firstName}
-                  lastName={entry.player.lastName}
-                  photoUrl={entry.player.photoUrl}
-                  meta={relativeTime(entry.addedAt)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="flex shrink-0 items-center gap-6">
-          <InlineStat label="Joueurs suivis" value={shortlistEntries.length} icon={Users} />
-          <InlineStat label="Prioritaires" value={priorityCount} icon={Star} />
-          <InlineStat label="Rapports" value={reportsCount} icon={ClipboardList} />
-        </div>
-      </div>
-
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -93,6 +92,40 @@ export default async function DashboardPage() {
           <Search className="size-4" />
           Rechercher un joueur
         </Link>
+      </div>
+
+      <div className="glass flex flex-col gap-2 rounded-2xl p-4">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Clock className="size-3.5" />
+          Activité récente
+        </div>
+        {shortlistEntries.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Aucune activité pour l&apos;instant.</p>
+        ) : (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {shortlistEntries.slice(0, 5).map((entry) => (
+              <ActivityPill
+                key={entry.id}
+                playerId={entry.player.id}
+                firstName={entry.player.firstName}
+                lastName={entry.player.lastName}
+                photoUrl={entry.player.photoUrl}
+                meta={relativeTime(entry.addedAt)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label="Joueurs suivis" value={shortlistEntries.length} icon={Users} />
+        <StatCard label="Rapports rédigés" value={reportsCount} icon={ClipboardList} />
+        <StatCard label="Valeur totale suivie" value={formatCompactEur(totalMarketValue)} icon={Wallet} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        <StatusBreakdownCard counts={statusCounts} />
+        <CoverageRatioCard withReport={playersWithReports.length} total={shortlistEntries.length} />
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">

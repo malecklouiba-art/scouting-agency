@@ -37,14 +37,14 @@ export function PlayerFutCard({
   isFollowing: boolean;
 }) {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-neutral-800 via-neutral-900 to-black p-5 text-foreground shadow-lg">
-      {/* Reflet diagonal façon verre — pure décoration, ne doit jamais intercepter les clics */}
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-card p-5 text-foreground shadow-lg">
+      {/* Dégradé diagonal vert pastel façon référence — pure décoration, ne doit jamais intercepter les clics */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/30 via-white/5 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/35 via-primary/10 to-transparent"
       />
 
-      <div className="glass-on-color absolute top-4 left-4 flex flex-col items-center gap-0 rounded-lg px-2.5 py-1.5 leading-none">
+      <div className="glass absolute top-4 left-4 flex flex-col items-center gap-0 rounded-lg px-2.5 py-1.5 leading-none">
         <span className="text-2xl font-bold">{player.position ?? "?"}</span>
         {player.shirtNumber && <span className="mt-1 text-xs font-medium opacity-80">#{player.shirtNumber}</span>}
       </div>
@@ -74,21 +74,21 @@ export function PlayerFutCard({
       </div>
 
       <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-        <div className="glass-on-color rounded-lg px-2 py-1.5">
+        <div className="glass rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Âge</p>
           <p className="text-sm font-semibold">{age ?? "—"}</p>
         </div>
-        <div className="glass-on-color rounded-lg px-2 py-1.5">
+        <div className="glass rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Taille</p>
           <p className="text-sm font-semibold">{player.heightCm ? `${player.heightCm} cm` : "—"}</p>
         </div>
-        <div className="glass-on-color rounded-lg px-2 py-1.5">
+        <div className="glass rounded-lg px-2 py-1.5">
           <p className="text-xs opacity-70">Pied</p>
           <p className="text-sm font-semibold">{player.preferredFoot ? FOOT_LABELS[player.preferredFoot] : "—"}</p>
         </div>
       </div>
 
-      <div className="glass-on-color mt-auto rounded-lg px-3 py-2 text-center">
+      <div className="glass mt-auto rounded-lg px-3 py-2 text-center">
         <p className="text-xs opacity-70">Valeur marchande</p>
         <p className="text-sm font-semibold">{formatCompactEur(player.marketValueEur)}</p>
       </div>

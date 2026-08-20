@@ -49,43 +49,44 @@
 }
 
 /*
- * ScoutPro n'a qu'une seule identité visuelle (sombre, vert néon) — pas de
- * bascule .dark : il n'y a rien à basculer, l'app a un seul thème fixe.
+ * ScoutPro n'a qu'une seule identité visuelle (claire, douce, accent vert
+ * pastel) — pas de bascule .dark : il n'y a rien à basculer, l'app a un seul
+ * thème fixe.
  */
 :root {
-  --background: #0a0a0a;
-  --foreground: #f4f4f2;
-  --card: #141614;
-  --card-foreground: #f4f4f2;
-  --popover: #141614;
-  --popover-foreground: #f4f4f2;
-  --primary: #c6ff00;
-  --primary-foreground: #0a0a0a;
-  --secondary: #1a1d1a;
-  --secondary-foreground: #f4f4f2;
-  --muted: #151715;
-  --muted-foreground: #9aa196;
-  --accent: #1f2a12;
-  --accent-foreground: #f4f4f2;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #0a0a0a;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.14);
-  --ring: #c6ff00;
-  --chart-1: #c6ff00;
-  --chart-2: #8fd424;
-  --chart-3: #5caa3a;
-  --chart-4: #397a3e;
-  --chart-5: #234d33;
-  --radius: 0.875rem;
-  --sidebar: #0d0f0d;
-  --sidebar-foreground: #f4f4f2;
-  --sidebar-primary: #c6ff00;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #171917;
-  --sidebar-accent-foreground: #f4f4f2;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #c6ff00;
+  --background: #eef0e8;
+  --foreground: #1d2018;
+  --card: #e6e9df;
+  --card-foreground: #1d2018;
+  --popover: #e6e9df;
+  --popover-foreground: #1d2018;
+  --primary: #d4f24a;
+  --primary-foreground: #202318;
+  --secondary: #e0e3d8;
+  --secondary-foreground: #1d2018;
+  --muted: #e2e5da;
+  --muted-foreground: #7c8272;
+  --accent: #d8ecb0;
+  --accent-foreground: #1d2018;
+  --destructive: #d64545;
+  --destructive-foreground: #fdf5f5;
+  --border: rgba(29, 32, 24, 0.08);
+  --input: rgba(29, 32, 24, 0.12);
+  --ring: #d4f24a;
+  --chart-1: #d4f24a;
+  --chart-2: #b8d968;
+  --chart-3: #93b854;
+  --chart-4: #6e9345;
+  --chart-5: #4a6b35;
+  --radius: 1.125rem;
+  --sidebar: #e9ebe2;
+  --sidebar-foreground: #1d2018;
+  --sidebar-primary: #d4f24a;
+  --sidebar-primary-foreground: #202318;
+  --sidebar-accent: #dde1d2;
+  --sidebar-accent-foreground: #1d2018;
+  --sidebar-border: rgba(29, 32, 24, 0.08);
+  --sidebar-ring: #d4f24a;
 }
 
 @layer base {
@@ -101,12 +102,11 @@
 }
 
 /*
- * Verre translucide façon "Liquid Glass" (iOS récent) / panneaux glossy PS3 —
- * flou + saturation du contenu derrière, liseré clair qui capte la lumière,
- * reflet interne en haut. Deux variantes : .glass pour une surface neutre sur
- * le fond clair de l'app (nav, header) ; .glass-on-color pour un élément posé
- * sur un fond déjà coloré (dégradé de la fiche joueur), teinté blanc plutôt
- * que carte pour ne pas juste redevenir opaque.
+ * Verre translucide façon "Liquid Glass" (iOS récent) — flou + saturation du
+ * contenu derrière, liseré clair qui capte la lumière, reflet interne en
+ * haut. .glass pour une surface autonome (nav, header, chips) ; .glass-surface
+ * pour ajouter le même traitement sans définir son propre fond (boutons, qui
+ * gardent la couleur de leur variant).
  */
 @layer utilities {
   .glass {
@@ -119,16 +119,6 @@
       inset 0 1px 0 color-mix(in oklab, white 60%, transparent);
   }
 
-  .glass-on-color {
-    background: color-mix(in oklab, white 18%, transparent);
-    backdrop-filter: blur(16px) saturate(1.6);
-    -webkit-backdrop-filter: blur(16px) saturate(1.6);
-    border: 1px solid color-mix(in oklab, white 30%, transparent);
-    box-shadow:
-      0 4px 16px -4px color-mix(in oklab, black 20%, transparent),
-      inset 0 1px 0 color-mix(in oklab, white 35%, transparent);
-  }
-
   .glass-surface {
     backdrop-filter: blur(12px) saturate(1.4);
     -webkit-backdrop-filter: blur(12px) saturate(1.4);
@@ -136,10 +126,5 @@
     box-shadow:
       0 2px 8px -2px color-mix(in oklab, var(--foreground) 15%, transparent),
       inset 0 1px 0 color-mix(in oklab, white 45%, transparent);
-  }
-
-  /* Halo néon réservé au repérage (nav actif) — pas appliqué à chaque élément coloré, pour ne pas noyer le signal. */
-  .glow-accent {
-    box-shadow: 0 0 20px -2px color-mix(in oklab, var(--primary) 55%, transparent);
   }
 }
