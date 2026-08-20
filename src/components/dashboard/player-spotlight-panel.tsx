@@ -1,8 +1,8 @@
 import Link from "next/link";
+import { FileText, Target } from "lucide-react";
 import { PlayerFutCard } from "@/components/players/player-fut-card";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { RECOMMENDATION_BADGE_VARIANT, RECOMMENDATION_LABELS } from "@/lib/recommendation";
+import { RECOMMENDATION_LABELS } from "@/lib/recommendation";
 import type { Club, Player, ReportRecommendation } from "@/generated/prisma/client";
 
 type SpotlightPlayer = Pick<
@@ -20,11 +20,13 @@ export function PlayerSpotlightPanel({
   player,
   club,
   age,
+  reportCount,
   latestReport,
 }: {
   player: SpotlightPlayer;
   club: Pick<Club, "name"> | null;
   age: number | null;
+  reportCount: number;
   latestReport: LatestReport | null;
 }) {
   return (
@@ -33,30 +35,47 @@ export function PlayerSpotlightPanel({
         <PlayerFutCard player={player} club={club} age={age} isFollowing />
       </div>
 
-      <Card className="flex flex-col gap-2 p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-foreground">Synthèse</p>
-          {latestReport?.recommendation && (
-            <Badge variant={RECOMMENDATION_BADGE_VARIANT[latestReport.recommendation]}>
-              {RECOMMENDATION_LABELS[latestReport.recommendation]}
-            </Badge>
-          )}
-        </div>
-        {latestReport ? (
-          <>
-            <p className="text-xs text-muted-foreground">Dernier rapport · {latestReport.date}</p>
-            <p className="text-sm text-foreground">
-              {latestReport.excerpt ?? "Rapport enregistré sans commentaire détaillé."}
+      <Card className="flex flex-col gap-4 p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+            <FileText className="size-4" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Rapports</p>
+            <p className="text-sm font-semibold text-foreground">
+              {reportCount === 0 ? "Aucun pour l'instant" : `${reportCount} enregistré${reportCount > 1 ? "s" : ""}`}
             </p>
-          </>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Aucun rapport pour l&apos;instant.{" "}
-            <Link href={`/players/${player.id}`} className="font-medium text-primary hover:underline">
-              Rédiger le premier
-            </Link>
-          </p>
-        )}
+          </div>
+        </div>
+
+        <div className="h-px bg-border" />
+
+        <div className="flex items-start gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+            <Target className="size-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground">Recommandation</p>
+            {latestReport ? (
+              <>
+                <p className="text-sm font-semibold text-foreground">
+                  {latestReport.recommendation ? RECOMMENDATION_LABELS[latestReport.recommendation] : "—"} ·{" "}
+                  <span className="font-normal text-muted-foreground">{latestReport.date}</span>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {latestReport.excerpt ?? "Rapport enregistré sans commentaire détaillé."}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Aucun rapport pour l&apos;instant.{" "}
+                <Link href={`/players/${player.id}`} className="font-medium text-primary hover:underline">
+                  Rédiger le premier
+                </Link>
+              </p>
+            )}
+          </div>
+        </div>
       </Card>
     </div>
   );

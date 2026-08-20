@@ -21,12 +21,14 @@ function subscribe(callback: () => void) {
   return () => window.removeEventListener("storage", callback);
 }
 
+// Rail fine par défaut (façon référence) tant que l'utilisateur n'a pas
+// explicitement choisi de la déplier — "0" est le seul état qui déplie.
 function getSnapshot() {
-  return localStorage.getItem(STORAGE_KEY) === "1";
+  return localStorage.getItem(STORAGE_KEY) !== "0";
 }
 
 function getServerSnapshot() {
-  return false;
+  return true;
 }
 
 export function LeftSidebar() {

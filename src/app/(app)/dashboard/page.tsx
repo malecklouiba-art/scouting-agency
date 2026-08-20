@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ClipboardList, Search, Star, Users } from "lucide-react";
+import { Clock, ClipboardList, Search, Star, Users } from "lucide-react";
 import { prisma } from "@/server/db/prisma";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { getShortlistPlayers } from "@/server/services/shortlist.service";
@@ -7,11 +7,19 @@ import { toPlayerSummary } from "@/server/services/player.service";
 import { calculateAge } from "@/lib/age";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { InlineStat } from "@/components/dashboard/inline-stat";
+import { ActivityPill } from "@/components/dashboard/activity-pill";
 import { ShortlistHighlightCard } from "@/components/dashboard/shortlist-highlight-card";
 import { RecentReportCard } from "@/components/dashboard/recent-report-card";
 import { PlayerSpotlightPanel } from "@/components/dashboard/player-spotlight-panel";
 import { EmptyState } from "@/components/shared/empty-state";
+
+function relativeTime(date: Date): string {
+  const days = Math.floor((Date.now() - date.getTime()) / 86_400_000);
+  if (days <= 0) return "Aujourd'hui";
+  if (days === 1) return "Hier";
+  return `Il y a ${days} j`;
+}
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -24,17 +32,18 @@ export default async function DashboardPage() {
       where: { organizationId: user.organizationId },
       include: { player: true, author: true },
       orderBy: { date: "desc" },
-      take: 4,
+      take: 3,
     }),
   ]);
 
   const spotlightEntry = shortlistEntries[0] ?? null;
-  const latestSpotlightReport = spotlightEntry
-    ? await prisma.report.findFirst({
+  const spotlightReports = spotlightEntry
+    ? await prisma.report.findMany({
         where: { playerId: spotlightEntry.playerId },
         orderBy: { date: "desc" },
       })
-    : null;
+    : [];
+  const latestSpotlightReport = spotlightReports[0] ?? null;
 
   const priorityCount = shortlistEntries.filter((entry) => entry.status === "PRIORITY").length;
   const dateFormatter = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" });
@@ -42,23 +51,48 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-6">
+      <div className="glass flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 flex-col gap-2">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="size-3.5" />
+            Activité récente
+          </div>
+          {shortlistEntries.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucune activité pour l&apos;instant.</p>
+          ) : (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {shortlistEntries.slice(0, 5).map((entry) => (
+                <ActivityPill
+                  key={entry.id}
+                  playerId={entry.player.id}
+                  firstName={entry.player.firstName}
+                  lastName={entry.player.lastName}
+                  photoUrl={entry.player.photoUrl}
+                  meta={relativeTime(entry.addedAt)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-6">
+          <InlineStat label="Joueurs suivis" value={shortlistEntries.length} icon={Users} />
+          <InlineStat label="Prioritaires" value={priorityCount} icon={Star} />
+          <InlineStat label="Rapports" value={reportsCount} icon={ClipboardList} />
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Bonjour{user.firstName ? ` ${user.firstName}` : ""}
           </h1>
           <p className="text-sm text-muted-foreground capitalize">{todayLabel}</p>
         </div>
-        <Link href="/players" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+        <Link href="/players" className={cn(buttonVariants({ variant: "default", size: "sm" }))}>
           <Search className="size-4" />
           Rechercher un joueur
         </Link>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatCard label="Joueurs suivis" value={shortlistEntries.length} icon={Users} />
-        <StatCard label="Prioritaires" value={priorityCount} icon={Star} />
-        <StatCard label="Rapports rédigés" value={reportsCount} icon={ClipboardList} />
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
@@ -76,8 +110,8 @@ export default async function DashboardPage() {
                 description="Suivez un joueur depuis sa fiche pour le voir apparaître ici."
               />
             ) : (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {shortlistEntries.slice(0, 6).map((entry) => (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {shortlistEntries.slice(0, 4).map((entry) => (
                   <ShortlistHighlightCard key={entry.id} player={toPlayerSummary(entry.player)} status={entry.status} />
                 ))}
               </div>
@@ -97,8 +131,8 @@ export default async function DashboardPage() {
                 description="Créez un rapport depuis une fiche joueur pour le retrouver ici."
               />
             ) : (
-              <div className="flex flex-col gap-2">
-                {recentReports.map((report) => (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {recentReports.map((report, index) => (
                   <RecentReportCard
                     key={report.id}
                     reportId={report.id}
@@ -106,6 +140,7 @@ export default async function DashboardPage() {
                     authorName={report.author.firstName ?? report.author.email}
                     date={dateFormatter.format(report.date)}
                     recommendation={report.recommendation}
+                    featured={index === 0}
                   />
                 ))}
               </div>
@@ -119,6 +154,7 @@ export default async function DashboardPage() {
               player={spotlightEntry.player}
               club={spotlightEntry.player.club}
               age={calculateAge(spotlightEntry.player.dateOfBirth)}
+              reportCount={spotlightReports.length}
               latestReport={
                 latestSpotlightReport
                   ? {

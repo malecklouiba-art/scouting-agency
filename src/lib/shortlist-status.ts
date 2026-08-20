@@ -14,3 +14,11 @@ export const SHORTLIST_STATUS_BADGE_VARIANT: Record<ShortlistStatus, "default" |
   PRIORITY: "default",
   DISCARDED: "destructive",
 };
+
+/** Pastille de statut compacte (tuiles dashboard) — dérivée des tokens existants, pas de couleur codée en dur. */
+export const SHORTLIST_STATUS_DOT_CLASS: Record<ShortlistStatus, string> = {
+  TO_WATCH: "bg-muted-foreground",
+  INTERESTING: "bg-foreground/60",
+  PRIORITY: "bg-primary",
+  DISCARDED: "bg-destructive",
+};
