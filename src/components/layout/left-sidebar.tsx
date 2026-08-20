@@ -62,7 +62,7 @@ export function LeftSidebar() {
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               collapsed && "justify-center px-0",
               isActive
-                ? "bg-secondary text-primary"
+                ? "glow-accent bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
             )}
           >
