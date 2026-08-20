@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Home, Search, Star } from "lucide-react";
+import { FileText, Home, Search, Sparkles, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Accueil", icon: Home },
+  { href: "/assistant", label: "Assistant", icon: Sparkles },
   { href: "/players", label: "Joueurs", icon: Search },
   { href: "/shortlist", label: "Shortlist", icon: Star },
   { href: "/reports", label: "Rapports", icon: FileText },
