@@ -38,10 +38,10 @@ export function PlayerFutCard({
 }) {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-card p-5 text-foreground shadow-lg">
-      {/* Dégradé diagonal vert pastel façon référence — pure décoration, ne doit jamais intercepter les clics */}
+      {/* Reflet diagonal neutre façon verre — pure décoration, ne doit jamais intercepter les clics */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/35 via-primary/10 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/35 via-white/10 to-transparent"
       />
 
       <div className="glass absolute top-4 left-4 flex flex-col items-center gap-0 rounded-lg px-2.5 py-1.5 leading-none">
