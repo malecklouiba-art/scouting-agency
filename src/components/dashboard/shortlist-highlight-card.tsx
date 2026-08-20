@@ -11,7 +11,7 @@ import type { ShortlistStatus } from "@/generated/prisma/client";
 export function ShortlistHighlightCard({ player, status }: { player: PlayerSummary; status: ShortlistStatus }) {
   return (
     <Link href={`/players/${player.id}`}>
-      <Card className="flex flex-col gap-3 p-4 transition-colors hover:border-primary/40">
+      <Card className="flex flex-col gap-3 p-4 transition-colors hover:ring-primary/40">
         <div className="flex items-start justify-between">
           <Avatar size="lg">
             <AvatarImage

@@ -6,7 +6,7 @@ export function StatCard({ label, value, icon: Icon }: { label: string; value: s
     <Card className="flex flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Icon className="size-3.5" />
         </div>
       </div>

@@ -18,7 +18,7 @@ export function ActivityPill({
   return (
     <Link
       href={`/players/${playerId}`}
-      className="glass-surface flex shrink-0 items-center gap-2 rounded-full py-1.5 pr-4 pl-1.5 transition-colors hover:border-primary/40"
+      className="glass-surface flex shrink-0 items-center gap-2 rounded-full py-1.5 pr-4 pl-1.5 transition-colors hover:ring-1 hover:ring-primary/40"
     >
       <Avatar size="sm">
         <AvatarImage src={photoUrl ?? placeholderPhotoUrl(playerId)} alt={`${firstName} ${lastName}`} />

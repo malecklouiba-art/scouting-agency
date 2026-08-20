@@ -15,7 +15,7 @@ export function CreateReportForm({ playerId }: { playerId: string }) {
   );
 
   return (
-    <form action={formAction} className="flex flex-col gap-3 rounded-lg border border-border p-4">
+    <form action={formAction} className="flex flex-col gap-3 rounded-lg border border-border p-4 shadow-sm">
       <p className="text-sm font-medium text-foreground">Nouveau rapport</p>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -62,7 +62,7 @@ export function CreateReportForm({ playerId }: { playerId: string }) {
         {isPending ? "Création..." : "Créer le rapport"}
       </Button>
 
-      {state?.status === "success" && <p className="text-sm text-primary">{state.message}</p>}
+      {state?.status === "success" && <p className="text-sm text-muted-foreground">{state.message}</p>}
       {state?.status === "error" && <p className="text-sm text-destructive">{state.message}</p>}
     </form>
   );

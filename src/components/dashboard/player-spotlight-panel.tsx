@@ -37,7 +37,7 @@ export function PlayerSpotlightPanel({
 
       <Card className="flex flex-col gap-4 p-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <FileText className="size-4" />
           </div>
           <div>
@@ -51,7 +51,7 @@ export function PlayerSpotlightPanel({
         <div className="h-px bg-border" />
 
         <div className="flex items-start gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Target className="size-4" />
           </div>
           <div className="min-w-0">
@@ -69,7 +69,7 @@ export function PlayerSpotlightPanel({
             ) : (
               <p className="text-sm text-muted-foreground">
                 Aucun rapport pour l&apos;instant.{" "}
-                <Link href={`/players/${player.id}`} className="font-medium text-primary hover:underline">
+                <Link href={`/players/${player.id}`} className="font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground">
                   Rédiger le premier
                 </Link>
               </p>

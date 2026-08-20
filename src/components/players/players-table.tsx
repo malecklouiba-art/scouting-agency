@@ -23,7 +23,7 @@ export function PlayersTable({
   const showScore = rows.some((row) => typeof row.score === "number");
 
   return (
-    <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+    <div className="overflow-x-auto rounded-xl shadow-sm ring-1 ring-foreground/[0.06]">
       <table className="w-full min-w-[760px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-border bg-secondary/60 text-left text-xs text-muted-foreground">
@@ -53,7 +53,7 @@ export function PlayersTable({
                       {player.lastName[0]}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="font-medium text-foreground hover:text-primary">
+                  <span className="font-medium text-foreground hover:underline">
                     {player.firstName} {player.lastName}
                   </span>
                 </Link>

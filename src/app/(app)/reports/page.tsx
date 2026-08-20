@@ -37,7 +37,7 @@ export default async function ReportsPage() {
         <div className="flex flex-col gap-2">
           {reports.map((report) => (
             <Link key={report.id} href={`/reports/${report.id}`}>
-              <Card className="flex flex-row items-center justify-between gap-3 p-3 transition-colors hover:border-primary/40">
+              <Card className="flex flex-row items-center justify-between gap-3 p-3 transition-colors hover:ring-primary/40">
                 <div>
                   <p className="text-sm font-medium text-foreground">
                     {report.player.firstName} {report.player.lastName}

@@ -26,14 +26,14 @@ export function RecentReportCard({
       <Card
         className={cn(
           "flex h-full flex-col gap-4 p-4 transition-colors",
-          featured ? "bg-primary text-primary-foreground" : "hover:border-primary/40",
+          featured ? "bg-primary text-primary-foreground" : "hover:ring-primary/40",
         )}
       >
         <div className="flex items-center justify-between">
           <div
             className={cn(
               "flex size-8 items-center justify-center rounded-full",
-              featured ? "bg-primary-foreground/15" : "bg-secondary text-primary",
+              featured ? "bg-primary-foreground/15" : "bg-primary text-primary-foreground",
             )}
           >
             <FileText className="size-4" />

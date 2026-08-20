@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
         className,
       )}
     >
-      Scout<span className="text-primary">Pro</span>
+      Scout<span className="rounded-md bg-primary px-1 text-primary-foreground">Pro</span>
     </Link>
   );
 }

@@ -17,7 +17,7 @@ export function PlayerCard({
 }) {
   return (
     <Link href={`/players/${player.id}`}>
-      <Card className="flex flex-row items-center justify-between gap-3 p-3 transition-colors hover:border-primary/40">
+      <Card className="flex flex-row items-center justify-between gap-3 p-3 transition-colors hover:ring-primary/40">
         <div className="flex items-center gap-3">
           <Avatar size="lg">
             <AvatarImage
